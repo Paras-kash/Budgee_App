@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
+import '../utils/preferences_service.dart';
 
 part 'theme_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class ThemeController extends _$ThemeController {
-  static const _themePrefsKey = 'is_dark_mode';
-
   @override
   ThemeMode build() {
     // Default to system theme
@@ -25,13 +23,11 @@ class ThemeController extends _$ThemeController {
     state = newState;
 
     // Persist the theme preference
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_themePrefsKey, newState == ThemeMode.dark);
+    await PreferencesService.setDarkMode(newState == ThemeMode.dark);
   }
 
   Future<void> loadThemePreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isDarkMode = prefs.getBool(_themePrefsKey);
+    final isDarkMode = await PreferencesService.isDarkMode();
 
     if (isDarkMode != null) {
       state = isDarkMode ? ThemeMode.dark : ThemeMode.light;

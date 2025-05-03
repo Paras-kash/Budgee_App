@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:go_router/go_router.dart';
+import 'package:budgee/features/onboarding/presentation/providers/onboarding_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -43,12 +44,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     // Start the animation
     _animationController.forward();
 
-    // Navigate to the next screen after animation completes
+    // Check onboarding status after splash animation
     Future.delayed(const Duration(milliseconds: 3000), () {
       if (mounted) {
-        context.go('/dashboard');
+        _navigateToNextScreen();
       }
     });
+  }
+
+  // Navigate to either onboarding or welcome based on completion status
+  Future<void> _navigateToNextScreen() async {
+    final onboardingCompleted = await ref.read(onboardingStatusProvider.future);
+    if (mounted) {
+      if (onboardingCompleted) {
+        context.go('/welcome');
+      } else {
+        context.go('/onboarding');
+      }
+    }
   }
 
   @override
@@ -86,26 +99,29 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     ),
                   );
                 },
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 10,
-                        spreadRadius: 2,
+                child: Hero(
+                  tag: 'app_logo',
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: SvgPicture.asset(
+                        'assets/images/logo.svg',
+                        width: 100,
+                        height: 100,
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SvgPicture.asset(
-                      'assets/images/logo.svg',
-                      width: 100,
-                      height: 100,
                     ),
                   ),
                 ),
