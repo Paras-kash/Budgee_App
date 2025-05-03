@@ -1,0 +1,65 @@
+name: budgee
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  
+  # UI
+  google_fonts: ^6.1.0
+  flutter_svg: ^2.0.10+1
+  lottie: ^3.1.0
+  
+  # Navigation
+  go_router: ^13.2.1
+  
+  # Data and Domain layer
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  
+  # Local storage
+  shared_preferences: ^2.2.2
+  path_provider: ^2.1.2
+  
+  # Service locator
+  get_it: ^7.6.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  
+  # Code generation
+  build_runner: ^2.4.8
+  freezed: ^2.4.7
+  json_serializable: ^6.7.1
+  riverpod_generator: ^2.4.0
+
+flutter:
+  uses-material-design: true
+  
+  # Adding assets
+  assets:
+    - assets/images/
+    - assets/animations/
+    - assets/fonts/
+
+  # Example of custom font - we'll use Google Fonts too
+  # fonts:
+  #   - family: Poppins
+  #     fonts:
+  #       - asset: assets/fonts/Poppins-Regular.ttf
+  #       - asset: assets/fonts/Poppins-Bold.ttf
+  #         weight: 700
