@@ -1,6 +1,8 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/validation_utils.dart';
@@ -109,12 +111,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Stack(
       children: [
         Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
+            backgroundColor: Colors.white,
             leading: IconButton(
               icon: const Icon(CupertinoIcons.back, size: 30),
               onPressed: () => context.pop(),
             ),
-            title: const Text('Log In'),
+            title: const Text(''),
             centerTitle: true,
           ),
           body: SafeArea(
@@ -125,22 +129,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 24),
+                    CircleAvatar(
+                      radius: 50,
 
-                    Text(
-                      'Welcome back',
-                      style: theme.textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      'Log in to your Budgee account',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      child: ClipOval(
+                        child: SvgPicture.asset(
+                          'assets/images/applogo.svg',
+                          height: 140,
+                          width: 140,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Login',
+                          style: theme.textTheme.headlineMedium,
+                          textAlign: TextAlign.center,
+                        ),
+
+                        const SizedBox(height: 8),
+                        Text(
+                          'Log to continue using the app',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
 
                     const SizedBox(height: 32),
@@ -175,11 +196,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     if (_errorMessage != null) const SizedBox(height: 24),
 
                     // Email field
+                    Text(
+                      'Email',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        hintText: 'Enter your email',
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide.none,
+                        ),
+
+                        hintText: 'Enter your Email',
+
                         prefixIcon: Icon(Icons.email_outlined),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -192,17 +227,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 24),
 
                     // Password field
+                    Text(
+                      'Password',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      ),
+                    ),
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
-                        hintText: 'Enter your password',
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide.none,
+                        ),
+
+                        hintText: 'Enter your Password',
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                           ),
                           onPressed:
                               !_isLoading
@@ -233,7 +280,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: !_isLoading ? _forgotPassword : null,
-                        child: const Text('Forgot Password?'),
+                        child: Text(
+                          'Forgot Password?',
+                          selectionColor: Colors.grey[200],
+                        ),
                       ),
                     ),
 
@@ -249,7 +299,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           backgroundColor: theme.colorScheme.primary,
                           foregroundColor: theme.colorScheme.onPrimary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                         child: const Text('Log In'),
@@ -281,6 +331,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           child: const Text('Sign Up'),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Text(
+                            "Or Continue With",
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    InkWell(
+                      onTap: () => print('not implemented yet'),
+                      child: Container(
+                        height: 50,
+                        width: 90,
+
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 2,
+                            color: Colors.grey[200]!,
+                          ),
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/images/google-brands-.svg',
+                            height: 30,
+                            width: 30,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

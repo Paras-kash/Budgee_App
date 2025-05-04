@@ -44,31 +44,42 @@ post_install do |installer|
       # Ensure minimum iOS deployment target
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       
-      # Remove problematic flags - more comprehensive approach
-      ['COMPILER_FLAGS', 'OTHER_CFLAGS', 'OTHER_CPLUSPLUSFLAGS'].each do |flag_name|
-        if config.build_settings[flag_name].present?
-          # Remove single -G flags (surrounded by spaces or at the beginning/end of string)
-          config.build_settings[flag_name] = config.build_settings[flag_name].gsub(/ -G |^-G | -G$/, ' ').squeeze(' ')
-          # Remove any remaining -G flags that might be concatenated with other flags
-          config.build_settings[flag_name] = config.build_settings[flag_name].gsub(/-G/, '')
-        end
-      end
-      
-      # Fix for Apple Silicon Macs with M1/M2 chips
+      # Fix for Apple Silicon Macs
       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386'
       
-      # Try to read and modify xcconfig if it exists and is readable
-      if config.base_configuration_reference && 
-         File.exist?(config.base_configuration_reference.real_path) && 
-         File.readable?(config.base_configuration_reference.real_path)
-        begin
+      # Disable bitcode as it causes problems with Flutter
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      
+      # Fix the -G flag issue more directly
+      if config.build_settings['OTHER_CFLAGS']
+        # Remove the -G flag directly
+        config.build_settings['OTHER_CFLAGS'] = config.build_settings['OTHER_CFLAGS'].gsub(/-G\b/, '')
+      end
+      
+      if config.build_settings['OTHER_CPLUSPLUSFLAGS']
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] = config.build_settings['OTHER_CPLUSPLUSFLAGS'].gsub(/-G\b/, '')
+      end
+
+      # Also remove from CFLAGS, CPLUSPLUSFLAGS which might include the flag
+      ['CFLAGS', 'CPLUSPLUSFLAGS'].each do |flag_name|
+        if config.build_settings[flag_name]
+          config.build_settings[flag_name] = config.build_settings[flag_name].gsub(/-G\b/, '')
+        end
+      end
+    end
+  end
+  
+  # XCConfig modification to fix DT_TOOLCHAIN_DIR issue
+  installer.generated_projects.each do |project|
+    project.targets.each do |target|
+      target.build_configurations.each do |config|
+        if config.base_configuration_reference.is_a?(Xcodeproj::Project::Object::PBXFileReference)
           xcconfig_path = config.base_configuration_reference.real_path
-          xcconfig = File.read(xcconfig_path)
-          xcconfig_mod = xcconfig.gsub(/DT_TOOLCHAIN_DIR/, "TOOLCHAIN_DIR")
-          File.open(xcconfig_path, "w") { |file| file << xcconfig_mod }
-        rescue => e
-          # Just log the error and continue if there's an issue with file operations
-          puts "Warning: Failed to modify xcconfig file: #{e.message}"
+          if File.exist?(xcconfig_path)
+            xcconfig = File.read(xcconfig_path)
+            xcconfig_mod = xcconfig.gsub(/DT_TOOLCHAIN_DIR/, "TOOLCHAIN_DIR")
+            File.open(xcconfig_path, "w") { |file| file << xcconfig_mod }
+          end
         end
       end
     end
