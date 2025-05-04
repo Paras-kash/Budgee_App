@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/utils/validation_utils.dart';
 import '../providers/auth_provider.dart';
@@ -58,12 +59,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(CupertinoIcons.back, size: 30),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Reset Password'),
+        title: const Text(''),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -77,25 +80,23 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 const SizedBox(height: 24),
 
                 // Icon
-                Icon(
-                  _resetEmailSent
-                      ? Icons.check_circle_outline
-                      : Icons.lock_reset_outlined,
-                  size: 64,
-                  color:
-                      _resetEmailSent
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.secondary,
+                SvgPicture.asset(
+                  'assets/images/Forgot password-rafiki.svg',
+                  height: 300,
+                  width: 300,
                 ),
 
                 const SizedBox(height: 24),
 
-                Text(
-                  _resetEmailSent
-                      ? 'Reset email sent'
-                      : 'Forgot your password?',
-                  style: theme.textTheme.headlineMedium,
-                  textAlign: TextAlign.center,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _resetEmailSent ? 'Reset email sent' : 'Forgot Password?',
+                      style: theme.textTheme.headlineMedium,
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 16),
@@ -144,9 +145,14 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   // Email field
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Enter your email',
+                    decoration: InputDecoration(
+                      fillColor: Colors.grey[200],
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      labelText: 'Enter your email',
                       prefixIcon: Icon(Icons.email_outlined),
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -164,6 +170,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     isLoading: _isLoading,
                     onPressed: _sendResetEmail,
                     child: const Text('Send Reset Link'),
+                    height: 50,
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: theme.colorScheme.onPrimary,
+                    borderRadius: 20,
                   ),
                 ] else ...[
                   // Button to resend email

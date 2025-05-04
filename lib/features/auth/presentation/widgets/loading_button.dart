@@ -26,6 +26,9 @@ class LoadingButton extends StatelessWidget {
   /// Color of the loading indicator
   final Color? loadingColor;
 
+  /// Border radius for the button
+  final double borderRadius;
+
   const LoadingButton({
     super.key,
     required this.isLoading,
@@ -36,6 +39,7 @@ class LoadingButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.loadingColor,
+    this.borderRadius = 8,
   });
 
   @override
@@ -53,7 +57,9 @@ class LoadingButton extends StatelessWidget {
           disabledBackgroundColor:
               backgroundColor?.withOpacity(0.7) ??
               theme.colorScheme.primary.withOpacity(0.7),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
         ),
         child:
             isLoading

@@ -8,6 +8,7 @@ import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/auth/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
+import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/onboarding/presentation/providers/onboarding_provider.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import 'dart:developer' as dev;
@@ -114,6 +115,16 @@ GoRouter router(Ref ref) {
             ),
       ),
       GoRoute(
+        path: '/forgot-password',
+        name: 'forgot-password',
+        pageBuilder:
+            (context, state) => buildPageWithSlideTransition(
+              context: context,
+              state: state,
+              child: const ForgotPasswordScreen(),
+            ),
+      ),
+      GoRoute(
         path: '/dashboard',
         name: 'dashboard',
         pageBuilder:
@@ -153,6 +164,7 @@ GoRouter router(Ref ref) {
         '/welcome',
         '/login',
         '/signup',
+        '/forgot-password',
         '/onboarding',
         '/',
       ];
