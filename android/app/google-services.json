@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "850877687733",
+    "project_id": "budgee-app-3fd89",
+    "storage_bucket": "budgee-app-3fd89.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850877687733:android:48c0852d32f6da8bab9bfc",
+        "android_client_info": {
+          "package_name": "com.example.budgee"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9zIu8kA8XaAPLmWjd6e0nVwRFimLUvdU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

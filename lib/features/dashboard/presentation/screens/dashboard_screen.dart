@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -10,6 +12,12 @@ class DashboardScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Budgee'),
         actions: [
+          // Logout button
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () => _showLogoutDialog(context, ref),
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
@@ -92,6 +100,56 @@ class DashboardScreen extends ConsumerWidget {
           // Handle navigation
         },
       ),
+    );
+  }
+
+  // Show logout confirmation dialog
+  void _showLogoutDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Logout'),
+            content: const Text('Are you sure you want to logout?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('CANCEL'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+
+                  // Show loading indicator
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Logging out...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+
+                  // Perform logout
+                  final authNotifier = ref.read(authNotifierProvider.notifier);
+                  final failure = await authNotifier.signOut();
+
+                  if (failure != null && context.mounted) {
+                    // Show error message if logout failed
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Logout failed: ${failure.message}'),
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  } else if (context.mounted) {
+                    // Navigate to welcome screen
+                    context.go('/welcome');
+                  }
+                },
+                child: const Text('LOGOUT'),
+              ),
+            ],
+          ),
     );
   }
 }

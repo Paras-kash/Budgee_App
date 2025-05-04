@@ -9,6 +9,8 @@ import '../../features/auth/presentation/screens/welcome_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/onboarding/presentation/providers/onboarding_provider.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
+import 'dart:developer' as dev;
 
 part 'router.g.dart';
 
@@ -58,9 +60,13 @@ CustomTransitionPage<T> buildPageWithFadeTransition<T>({
 GoRouter router(Ref ref) {
   final onboardingCompleted = ref.watch(onboardingStatusProvider);
 
+  // Add authentication state watch
+  final authState = ref.watch(authNotifierProvider);
+
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: '/',
+    debugLogDiagnostics: true, // Enable router logging
     routes: [
       GoRoute(
         path: '/',
@@ -119,31 +125,110 @@ GoRouter router(Ref ref) {
       ),
     ],
     redirect: (context, state) async {
+      final currentLocation = state.uri.toString();
+      dev.log('Routing: Redirecting from $currentLocation', name: 'Router');
+
       // Allow splash screen to handle initial routing logic
-      if (state.uri.toString() == '/') {
+      if (currentLocation == '/') {
+        dev.log('Routing: Not redirecting from splash screen', name: 'Router');
         return null;
       }
 
+      // Get authentication state
+      final isAuthenticated = authState.valueOrNull == AuthState.authenticated;
+      dev.log(
+        'Routing: Auth state is: ${authState.valueOrNull}',
+        name: 'Router',
+      );
+
       // Wait for onboardingCompleted to resolve
       final isOnboardingCompleted = await onboardingCompleted.value;
+      dev.log(
+        'Routing: Onboarding completed: $isOnboardingCompleted',
+        name: 'Router',
+      );
+
+      // Public routes that don't require authentication
+      final publicRoutes = [
+        '/welcome',
+        '/login',
+        '/signup',
+        '/onboarding',
+        '/',
+      ];
 
       // If onboarding is not completed and user is not on onboarding screen, redirect to onboarding
       if (isOnboardingCompleted == false &&
-          state.uri.toString() != '/onboarding' &&
-          state.uri.toString() != '/') {
+          currentLocation != '/onboarding' &&
+          currentLocation != '/') {
+        dev.log('Routing: Redirecting to onboarding', name: 'Router');
         return '/onboarding';
       }
 
+      // If authenticated and trying to access login/signup/welcome screens, redirect to dashboard
+      if (isAuthenticated && publicRoutes.contains(currentLocation)) {
+        dev.log(
+          'Routing: User is authenticated, redirecting to dashboard',
+          name: 'Router',
+        );
+        return '/dashboard';
+      }
+
+      // If not authenticated and trying to access dashboard, redirect to welcome
+      if (!isAuthenticated && currentLocation == '/dashboard') {
+        dev.log(
+          'Routing: User is not authenticated, redirecting to welcome',
+          name: 'Router',
+        );
+        return '/welcome';
+      }
+
+      // Handle error state in authentication
+      if (authState is AsyncError && !publicRoutes.contains(currentLocation)) {
+        dev.log('Routing: Auth error, redirecting to welcome', name: 'Router');
+        return '/welcome';
+      }
+
+      // No redirection needed
+      dev.log(
+        'Routing: No redirection needed for $currentLocation',
+        name: 'Router',
+      );
       return null;
     },
-    errorBuilder:
-        (context, state) => Material(
-          child: Center(
-            child: Text(
-              'Route not found: ${state.uri}',
-              style: Theme.of(context).textTheme.titleLarge,
+    errorBuilder: (context, state) {
+      dev.log('Router Error: ${state.error}', name: 'Router');
+      return Material(
+        child: Scaffold(
+          appBar: AppBar(title: const Text('Error')),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                  const SizedBox(height: 16),
+                  Text(
+                    'An error occurred',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'We couldn\'t find the page you were looking for.',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => context.go('/'),
+                    child: const Text('Go to Home'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
+      );
+    },
   );
 }

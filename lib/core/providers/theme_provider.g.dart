@@ -24,7 +24,7 @@ final currentThemeProvider = AutoDisposeProvider<ThemeData>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentThemeRef = AutoDisposeProviderRef<ThemeData>;
-String _$themeControllerHash() => r'34f0bcf37b5ccda99ac6b487aafcc68fac124d84';
+String _$themeControllerHash() => r'447dedca1545d86edccc6664031cfe2bed27ea83';
 
 /// See also [ThemeController].
 @ProviderFor(ThemeController)
