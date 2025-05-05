@@ -1,10 +1,8 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/validation_utils.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/biometric_button.dart';

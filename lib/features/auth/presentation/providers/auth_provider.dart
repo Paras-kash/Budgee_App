@@ -1,5 +1,4 @@
 import 'dart:developer' as dev;
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/config/dependency_injection.dart';
 import '../../../../core/errors/failures.dart';

@@ -169,11 +169,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   LoadingButton(
                     isLoading: _isLoading,
                     onPressed: _sendResetEmail,
-                    child: const Text('Send Reset Link'),
                     height: 50,
                     backgroundColor: theme.colorScheme.primary,
                     foregroundColor: theme.colorScheme.onPrimary,
                     borderRadius: 20,
+                    child: const Text('Send Reset Link'),
                   ),
                 ] else ...[
                   // Button to resend email

@@ -153,7 +153,7 @@ GoRouter router(Ref ref) {
       );
 
       // Wait for onboardingCompleted to resolve
-      final isOnboardingCompleted = await onboardingCompleted.value;
+      final isOnboardingCompleted = onboardingCompleted.value;
       dev.log(
         'Routing: Onboarding completed: $isOnboardingCompleted',
         name: 'Router',

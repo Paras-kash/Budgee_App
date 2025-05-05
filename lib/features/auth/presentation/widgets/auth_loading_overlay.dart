@@ -13,7 +13,7 @@ class AuthLoadingOverlay extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Material(
-      color: theme.colorScheme.background,
+      color: theme.colorScheme.surface,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -5,7 +5,7 @@ import 'onboarding_model.dart';
 class OnboardingPage extends StatelessWidget {
   final OnboardingPageModel model;
 
-  const OnboardingPage({Key? key, required this.model}) : super(key: key);
+  const OnboardingPage({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
